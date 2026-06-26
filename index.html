@@ -338,7 +338,7 @@
         </div>
 
         <!-- KPI Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
             <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center justify-between order-card">
                 <div>
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Órdenes</span>
@@ -382,6 +382,15 @@
                 </div>
                 <div class="h-12 w-12 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 text-xl">
                     <i class="fa-solid fa-cubes"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center justify-between order-card">
+                <div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Pupusas</span>
+                    <h4 class="text-3xl font-extrabold text-orange-700 mt-0.5" id="kpi-total-pupusas">0</h4>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600 text-xl">
+                    <i class="fa-solid fa-burger"></i>
                 </div>
             </div>
         </div>
@@ -861,17 +870,19 @@ function switchView(view) {
 // DASHBOARD
 // -------------------------------------------------------
 function updateDashboard() {
-    const total     = database.length;
-    const salesSum  = database.reduce((a, c) => a + c.total, 0);
-    const cash      = database.filter(o => o.payment === 'Efectivo').length;
-    const deposit   = database.filter(o => o.payment === 'Depósito').length;
-    const totalUnits = database.reduce((a, c) => a + (c.qty || 0), 0);
+    const total      = database.length;
+    const salesSum   = database.reduce((a, c) => a + c.total, 0);
+    const cash       = database.filter(o => o.payment === 'Efectivo').length;
+    const deposit    = database.filter(o => o.payment === 'Depósito').length;
+    const totalUnits  = database.reduce((a, c) => a + (c.qty || 0), 0);
+    const totalPupusas = totalUnits * 3;
 
     document.getElementById('kpi-orders-count').innerText  = total;
     document.getElementById('kpi-total-sales').innerText   = `L. ${salesSum.toLocaleString('es-HN', {minimumFractionDigits:2})}`;
     document.getElementById('kpi-cash-orders').innerText   = cash;
     document.getElementById('kpi-deposit-orders').innerText = deposit;
     document.getElementById('kpi-total-units').innerText   = totalUnits.toLocaleString('es-HN');
+    document.getElementById('kpi-total-pupusas').innerText = totalPupusas.toLocaleString('es-HN');
     document.getElementById('order-count-text').innerText  = total > 0 ? `· ${total} pedido(s)` : '';
 
     renderOrdersTable();
