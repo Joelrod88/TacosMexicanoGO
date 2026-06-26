@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PupusaFlow - Sistema de Pedidos y Control</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for beautiful graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS to generate REAL Excel files (.xlsx) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #d97706; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-amber-50/40 min-h-screen text-slate-800">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-amber-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <!-- LOGO ACTUALIZADO DESDE GOOGLE DRIVE -->
+                    <img src="https://lh3.googleusercontent.com/d/1ceWWHZOj6A1Gw4dT6BTySwYip7U_DnVN" alt="Logo PupusaFlow" class="h-10 w-10 object-cover rounded-full bg-white p-0.5 shadow-md">
+                    <span class="font-bold text-xl tracking-wider">PupusaFlow</span>
+                </div>
+                <div class="flex space-x-2">
+                    <button id="btn-client-view" onclick="switchView('client')" class="px-4 py-2 rounded-full font-medium transition bg-amber-800 shadow-md">
+                        <i class="fa-solid fa-store mr-1"></i> Pedir Pupusas
+                    </button>
+                    <button id="btn-admin-view" onclick="triggerAdminAccess()" class="px-4 py-2 rounded-full font-medium transition hover:bg-amber-700">
+                        <i class="fa-solid fa-chart-line mr-1"></i> Administración
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- App Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ============================================ -->
+        <!-- VIEW: CLIENT ORDER FORM                      -->
+        <!-- ============================================ -->
+        <section id="view-client" class="block max-w-2xl mx-auto">
+            <!-- Hero Header with Image Embedding -->
+            <div class="relative rounded-3xl overflow-hidden shadow-2xl mb-8 h-48 sm:h-64 bg-slate-900">
+                <!-- IMAGEN DE COMIDA PRINCIPAL ACTUALIZADA DESDE GOOGLE DRIVE -->
+                <img src="https://lh3.googleusercontent.com/d/1ASsxo6tnktAAsbeg7Dp8K9eW7fNOBJic" alt="Pupusas de Honduras" class="w-full h-full object-cover opacity-85">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6 text-white">
+                    <h1 class="text-3xl font-bold tracking-tight">¡Pide tus Ricas Pupusas! 🫓</h1>
+                    <p class="text-amber-300 text-sm mt-1">La orden cuesta exactamente <span class="bg-amber-500 text-slate-950 font-extrabold px-3 py-0.5 rounded-full text-xs">L. 100.00</span></p>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="bg-white rounded-3xl shadow-xl p-8 border border-amber-100">
+                <h2 class="text-xl font-semibold mb-6 flex items-center text-amber-900 border-b pb-3 border-amber-100">
+                    <i class="fa-solid fa-file-invoice-dollar mr-2 text-amber-600"></i> Formulario de Pedido
+                </h2>
+
+                <form id="order-form" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                    <!-- Name Input -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Nombre Completo <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                            <input type="text" id="client-name" required placeholder="Ej. Carlos Martínez" 
+                                class="pl-10 w-full rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition p-3">
+                        </div>
+                    </div>
+
+                    <!-- Phone Input -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Teléfono Móvil <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                <i class="fa-solid fa-phone"></i>
+                            </span>
+                            <input type="tel" id="client-phone" required placeholder="Ej. +504 9999-9999" 
+                                class="pl-10 w-full rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition p-3">
+                        </div>
+                    </div>
+
+                    <!-- Quantity Input -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Cantidad de Órdenes <span class="text-red-500">*</span></label>
+                        <div class="flex items-center space-x-3">
+                            <button type="button" onclick="adjustQty(-1)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 w-11 h-11 rounded-xl flex items-center justify-center transition font-bold text-lg">-</button>
+                            <input type="number" id="order-qty" value="1" min="1" required readonly
+                                class="w-20 text-center font-bold text-xl rounded-xl border border-slate-200 p-2.5 bg-slate-50">
+                            <button type="button" onclick="adjustQty(1)" class="bg-amber-100 hover:bg-amber-200 text-amber-700 w-11 h-11 rounded-xl flex items-center justify-center transition font-bold text-lg">+</button>
+                            
+                            <div class="flex-grow text-right pr-2">
+                                <span class="text-xs text-slate-500 block">Total a Pagar</span>
+                                <span class="text-2xl font-extrabold text-amber-600" id="total-price">L. 100.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Type -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Método de Pago <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="flex items-center justify-center p-4 border rounded-2xl cursor-pointer transition hover:bg-amber-50/50 border-amber-500 bg-amber-50/50" id="label-pay-cash">
+                                <input type="radio" name="payment-method" value="Efectivo" checked onchange="toggleReceiptUpload(false)" class="hidden">
+                                <div class="text-center">
+                                    <i class="fa-solid fa-money-bill-wave text-2xl text-emerald-600 mb-1"></i>
+                                    <span class="block font-medium text-sm">Efectivo</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center justify-center p-4 border rounded-2xl cursor-pointer transition hover:bg-amber-50/50 border-slate-200" id="label-pay-deposit">
+                                <input type="radio" name="payment-method" value="Depósito" onchange="toggleReceiptUpload(true)" class="hidden">
+                                <div class="text-center">
+                                    <i class="fa-solid fa-receipt text-2xl text-amber-600 mb-1"></i>
+                                    <span class="block font-medium text-sm">Depósito</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Deposit Image Upload -->
+                    <div id="receipt-upload-section" class="hidden space-y-2">
+                        <label class="block text-sm font-medium text-slate-700">Subir Fotografía del Depósito <span class="text-red-500">*</span></label>
+                        <div class="border-2 border-dashed border-amber-200 rounded-2xl p-6 text-center hover:bg-amber-50/30 transition cursor-pointer relative" onclick="document.getElementById('receipt-image').click()">
+                            <input type="file" id="receipt-image" accept="image/*" class="hidden" onchange="handleImagePreview(event)">
+                            <div id="upload-prompt" class="space-y-2">
+                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-amber-500"></i>
+                                <p class="text-sm font-medium text-slate-600">Presiona aquí para buscar el comprobante</p>
+                                <p class="text-xs text-slate-400">Archivos PNG, JPG o JPEG</p>
+                            </div>
+                            <div id="upload-preview" class="hidden">
+                                <img id="preview-img" src="" alt="Comprobante cargado" class="max-h-48 mx-auto rounded-lg shadow-md mb-2">
+                                <span class="text-xs text-emerald-600 block font-medium"><i class="fa-solid fa-check-circle"></i> Imagen cargada con éxito</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-4 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 flex justify-center items-center">
+                        <i class="fa-solid fa-utensils mr-2"></i> Confirmar Pedido de Pupusas
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- VIEW: ADMIN DASHBOARD                        -->
+        <!-- ============================================ -->
+        <section id="view-admin" class="hidden space-y-8">
+            <!-- Admin Top Bar -->
+            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900">Panel de Administración</h1>
+                    <p class="text-sm text-slate-500">Control interno protegido de pedidos y ventas globales</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2.5 rounded-xl transition shadow flex items-center">
+                        <i class="fa-solid fa-file-excel mr-2"></i> Exportar a Excel
+                    </button>
+                    <button onclick="clearDatabase()" class="bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 font-medium px-4 py-2.5 rounded-xl transition flex items-center">
+                        <i class="fa-solid fa-trash-can mr-2"></i> Limpiar Todo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Email Setup & Logs -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Settings Panel -->
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-900 mb-4 flex items-center">
+                            <i class="fa-solid fa-gears mr-2 text-amber-600"></i> Configurar Notificaciones
+                        </h3>
+                        <p class="text-xs text-slate-500 mb-4">Ingresa los dos correos que recibirán los comprobantes y avisos de orden automáticamente.</p>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Correo de Alertas 1</label>
+                                <input type="email" id="admin-email-1" value="alertas1@tupupusa.com" class="w-full rounded-xl border border-slate-200 text-sm p-3 focus:ring-1 focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Correo de Alertas 2</label>
+                                <input type="email" id="admin-email-2" value="finanzas2@tupupusa.com" class="w-full rounded-xl border border-slate-200 text-sm p-3 focus:ring-1 focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="saveAdminEmails()" class="mt-6 w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-2.5 rounded-xl transition shadow text-sm">
+                        <i class="fa-solid fa-save mr-2"></i> Guardar Correos
+                    </button>
+                </div>
+
+                <!-- Email Simulation Console -->
+                <div class="bg-slate-900 rounded-3xl p-6 shadow-md text-white lg:col-span-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold flex items-center text-amber-400">
+                            <i class="fa-solid fa-terminal mr-2"></i> Monitor de Correos Despachados (Simulación Activa)
+                        </h3>
+                        <span class="h-2.5 w-2.5 bg-emerald-500 rounded-full animate-ping"></span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-4">Registro en vivo del sistema enviando correos de facturación a tus dos correos destinatarios.</p>
+                    <div id="email-log-container" class="space-y-2 h-44 overflow-y-auto pr-2 text-xs font-mono bg-black/40 p-4 rounded-xl border border-slate-800">
+                        <p class="text-slate-500">[Esperando nuevos pedidos para despachar correos...]</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Órdenes Totales</span>
+                        <h4 class="text-3xl font-bold text-slate-800 mt-1" id="kpi-orders-count">0</h4>
+                    </div>
+                    <div class="h-12 w-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 text-xl"><i class="fa-solid fa-box"></i></div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Venta Total</span>
+                        <h4 class="text-3xl font-bold text-emerald-600 mt-1" id="kpi-total-sales">L. 0.00</h4>
+                    </div>
+                    <div class="h-12 w-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 text-xl"><i class="fa-solid fa-money-bill-wave"></i></div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">En Efectivo</span>
+                        <h4 class="text-3xl font-bold text-slate-800 mt-1" id="kpi-cash-orders">0</h4>
+                    </div>
+                    <div class="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 text-xl"><i class="fa-solid fa-coins"></i></div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Por Depósito</span>
+                        <h4 class="text-3xl font-bold text-slate-800 mt-1" id="kpi-deposit-orders">0</h4>
+                    </div>
+                    <div class="h-12 w-12 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600 text-xl"><i class="fa-solid fa-receipt"></i></div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4"><i class="fa-solid fa-chart-pie text-amber-500 mr-2"></i> Métodos de Pago</h3>
+                    <div class="relative h-64 flex justify-center"><canvas id="payment-chart"></canvas></div>
+                </div>
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4"><i class="fa-solid fa-chart-bar text-amber-500 mr-2"></i> Volumen de Órdenes</h3>
+                    <div class="relative h-64"><canvas id="orders-chart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Table Section -->
+            <div class="bg-white rounded-3xl shadow-md border border-slate-100 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-900">Registro General de Pedidos</h3>
+                        <p class="text-xs text-slate-500">Revisa información en vivo y descarga tu Excel de control.</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-medium text-slate-600">Filtrar:</span>
+                        <select id="table-filter" onchange="renderOrdersTable()" class="rounded-xl border border-slate-200 text-xs p-2 bg-white">
+                            <option value="todos">Todos</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Depósito">Depósitos</option>
+                            <option value="Pendiente">Pendientes</option>
+                            <option value="Completado">Completados</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 uppercase text-[11px] font-bold tracking-wider border-b border-slate-200">
+                                <th class="py-4 px-6">ID</th>
+                                <th class="py-4 px-6">Cliente</th>
+                                <th class="py-4 px-6">Teléfono</th>
+                                <th class="py-4 px-6 text-center">Órdenes</th>
+                                <th class="py-4 px-6">Monto</th>
+                                <th class="py-4 px-6">Pago</th>
+                                <th class="py-4 px-6 text-center">Comprobante</th>
+                                <th class="py-4 px-6">Estatus</th>
+                                <th class="py-4 px-6 text-right">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============================================ -->
+    <!-- CUSTOM LOGIN MODAL (Oculta contraseña)        -->
+    <!-- ============================================ -->
+    <div id="login-modal" class="hidden fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4" onclick="closeLoginModal()">
+        <div class="bg-white rounded-3xl overflow-hidden shadow-2xl max-w-sm w-full p-6 relative" onclick="event.stopPropagation()">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center mb-6">
+                <span class="text-4xl">🔐</span>
+                <h3 class="font-bold text-slate-800 text-xl mt-2">Acceso Administrativo</h3>
+                <p class="text-xs text-slate-400 mt-1">Ingresa tu contraseña de control privada</p>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <input type="password" id="admin-password-input" placeholder="••••••••" 
+                        class="w-full rounded-2xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition p-3.5 text-center text-lg tracking-widest outline-none">
+                    <p id="login-error-msg" class="text-xs text-rose-500 mt-2 text-center font-medium hidden">
+                        ⚠️ Contraseña incorrecta. Inténtalo de nuevo.
+                    </p>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="closeLoginModal()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3 rounded-xl transition text-sm">
+                        Cancelar
+                    </button>
+                    <button onclick="verifyAdminPassword()" class="w-1/2 bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-xl transition text-sm shadow">
+                        Ingresar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for full deposit image -->
+    <div id="image-modal" class="hidden fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4" onclick="closeImageModal()">
+        <div class="relative bg-white rounded-3xl overflow-hidden shadow-2xl max-w-lg w-full p-4" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-3">
+                <h4 class="font-bold text-slate-800 text-base" id="modal-title">Comprobante de Depósito</h4>
+                <button onclick="closeImageModal()" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="bg-slate-50 rounded-2xl overflow-hidden h-[400px] flex items-center justify-center border border-slate-100">
+                <img id="modal-img-element" src="" alt="Comprobante" class="max-h-full max-w-full object-contain">
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Application Logic -->
+    <script>
+        const defaultOrders = [
+            { id: "PF-7123", name: "Gabriela Zelaya", phone: "+504 9482-1234", qty: 3, total: 300, payment: "Depósito", receipt: "https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=600&auto=format&fit=crop", status: "Pendiente", date: "2026-06-25 15:42" },
+            { id: "PF-7124", name: "Josué Alvarado", phone: "+504 3120-4567", qty: 2, total: 200, payment: "Efectivo", receipt: null, status: "Completado", date: "2026-06-25 16:15" }
+        ];
+
+        let database = JSON.parse(localStorage.getItem('pupusa_orders')) || defaultOrders;
+        if (!localStorage.getItem('pupusa_orders')) localStorage.setItem('pupusa_orders', JSON.stringify(database));
+
+        let adminEmails = JSON.parse(localStorage.getItem('pupusa_emails')) || { email1: "alertas1@tupupusa.com", email2: "finanzas2@tupupusa.com" };
+        let currentUploadedImageBase64 = null;
+        let paymentChartInstance = null;
+        let ordersChartInstance = null;
+
+        window.addEventListener('load', () => {
+            document.getElementById('admin-email-1').value = adminEmails.email1;
+            document.getElementById('admin-email-2').value = adminEmails.email2;
+            updateDashboard();
+
+            // Submit logic support for Enter key inside password field
+            document.getElementById('admin-password-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    verifyAdminPassword();
+                }
+            });
+        });
+
+        // Trigger custom admin validation modal
+        function triggerAdminAccess() {
+            // Reset modal state
+            document.getElementById('admin-password-input').value = "";
+            document.getElementById('login-error-msg').classList.add('hidden');
+            
+            // Show modal
+            document.getElementById('login-modal').classList.remove('hidden');
+            document.getElementById('admin-password-input').focus();
+        }
+
+        function closeLoginModal() {
+            document.getElementById('login-modal').classList.add('hidden');
+        }
+
+        // Verify custom password securely with dots/hidden values
+        function verifyAdminPassword() {
+            const enteredPass = document.getElementById('admin-password-input').value;
+            const targetPass = "Joel2026."; // Contraseña de administración personalizada
+
+            if (enteredPass === targetPass) {
+                closeLoginModal();
+                switchView('admin');
+            } else {
+                document.getElementById('login-error-msg').classList.remove('hidden');
+                document.getElementById('admin-password-input').value = "";
+                document.getElementById('admin-password-input').focus();
+            }
+        }
+
+        function switchView(view) {
+            const clientBtn = document.getElementById('btn-client-view');
+            const adminBtn = document.getElementById('btn-admin-view');
+            const clientSec = document.getElementById('view-client');
+            const adminSec = document.getElementById('view-admin');
+
+            if (view === 'client') {
+                clientBtn.classList.add('bg-amber-800', 'shadow-md');
+                adminBtn.classList.remove('bg-amber-800', 'shadow-md');
+                clientSec.classList.replace('hidden', 'block');
+                adminSec.classList.replace('block', 'hidden');
+            } else {
+                adminBtn.classList.add('bg-amber-800', 'shadow-md');
+                clientBtn.classList.remove('bg-amber-800', 'shadow-md');
+                adminSec.classList.replace('hidden', 'block');
+                clientSec.classList.replace('block', 'hidden');
+                updateDashboard();
+            }
+        }
+
+        // Adjust Qty buttons
+        function adjustQty(amount) {
+            const qtyInput = document.getElementById('order-qty');
+            let currentVal = parseInt(qtyInput.value) + amount;
+            if (currentVal < 1) currentVal = 1;
+            qtyInput.value = currentVal;
+            document.getElementById('total-price').innerText = `L. ${(currentVal * 100).toFixed(2)}`;
+        }
+
+        function toggleReceiptUpload(show) {
+            const section = document.getElementById('receipt-upload-section');
+            const cashLabel = document.getElementById('label-pay-cash');
+            const depLabel = document.getElementById('label-pay-deposit');
+            if (show) {
+                section.classList.remove('hidden');
+                depLabel.classList.add('border-amber-500', 'bg-amber-50/50');
+                cashLabel.classList.remove('border-amber-500', 'bg-amber-50/50');
+            } else {
+                section.classList.add('hidden');
+                cashLabel.classList.add('border-amber-500', 'bg-amber-50/50');
+                depLabel.classList.remove('border-amber-500', 'bg-amber-50/50');
+                currentUploadedImageBase64 = null;
+                document.getElementById('upload-preview').classList.add('hidden');
+                document.getElementById('upload-prompt').classList.remove('hidden');
+            }
+        }
+
+        function handleImagePreview(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentUploadedImageBase64 = e.target.result;
+                document.getElementById('preview-img').src = currentUploadedImageBase64;
+                document.getElementById('upload-prompt').classList.add('hidden');
+                document.getElementById('upload-preview').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveAdminEmails() {
+            adminEmails.email1 = document.getElementById('admin-email-1').value;
+            adminEmails.email2 = document.getElementById('admin-email-2').value;
+            localStorage.setItem('pupusa_emails', JSON.stringify(adminEmails));
+            logEmailAction(`🛠️ Correos de destino actualizados: [${adminEmails.email1}] y [${adminEmails.email2}]`);
+            alert("¡Correos actualizados con éxito!");
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('client-name').value;
+            const phone = document.getElementById('client-phone').value;
+            const qty = parseInt(document.getElementById('order-qty').value);
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+
+            if (paymentMethod === 'Depósito' && !currentUploadedImageBase64) {
+                alert("Por favor cargue su foto de comprobante bancario.");
+                return;
+            }
+
+            const orderId = "PF-" + Math.floor(1000 + Math.random() * 9000);
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            const newOrder = { id: orderId, name, phone, qty, total: qty * 100, payment: paymentMethod, receipt: currentUploadedImageBase64, status: "Pendiente", date: dateStr };
+            database.unshift(newOrder);
+            localStorage.setItem('pupusa_orders', JSON.stringify(database));
+
+            triggerSimulatedEmails(newOrder);
+            alert(`🎉 ¡Pedido ${orderId} enviado! Notificación despachada a tus correos.`);
+            document.getElementById('order-form').reset();
+            document.getElementById('order-qty').value = "1";
+            document.getElementById('total-price').innerText = "L. 100.00";
+            toggleReceiptUpload(false);
+            updateDashboard();
+        }
+
+        function triggerSimulatedEmails(order) {
+            logEmailAction(`✉️ ALERTA ENVIADA ➔ [${adminEmails.email1}] | Pedido: ${order.id} | Cliente: ${order.name} | Cantidad: ${order.qty}`);
+            setTimeout(() => {
+                logEmailAction(`✉️ COPIA DE ALERTA ➔ [${adminEmails.email2}] | Archivos adjuntos y registrados en sistema.`);
+            }, 600);
+        }
+
+        function logEmailAction(message) {
+            const logContainer = document.getElementById('email-log-container');
+            const def = logContainer.querySelector('.text-slate-500');
+            if (def) def.remove();
+            const p = document.createElement('p');
+            p.className = "text-emerald-400 border-b border-slate-800 pb-1 mb-1";
+            p.innerText = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.prepend(p);
+        }
+
+        function updateDashboard() {
+            const totalOrders = database.length;
+            const totalSalesSum = database.reduce((acc, curr) => acc + curr.total, 0);
+            const cashCount = database.filter(o => o.payment === 'Efectivo').length;
+            const depositCount = database.filter(o => o.payment === 'Depósito').length;
+
+            document.getElementById('kpi-orders-count').innerText = totalOrders;
+            document.getElementById('kpi-total-sales').innerText = `L. ${totalSalesSum.toFixed(2)}`;
+            document.getElementById('kpi-cash-orders').innerText = cashCount;
+            document.getElementById('kpi-deposit-orders').innerText = depositCount;
+
+            renderOrdersTable();
+            renderCharts(cashCount, depositCount);
+        }
+
+        function renderOrdersTable() {
+            const filterValue = document.getElementById('table-filter').value;
+            const tbody = document.getElementById('orders-tbody');
+            tbody.innerHTML = '';
+
+            let filtered = database;
+            if (filterValue === 'Efectivo' || filterValue === 'Depósito') filtered = database.filter(o => o.payment === filterValue);
+            else if (filterValue === 'Pendiente' || filterValue === 'Completado') filtered = database.filter(o => o.status === filterValue);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-400">Sin datos.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(order => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="py-4 px-6 font-semibold text-amber-800">${order.id}</td>
+                    <td class="py-4 px-6"><strong>${order.name}</strong><br><span class="text-[10px] text-slate-400">${order.date}</span></td>
+                    <td class="py-4 px-6 text-slate-600">${order.phone}</td>
+                    <td class="py-4 px-6 text-center font-bold">${order.qty}</td>
+                    <td class="py-4 px-6 font-bold text-slate-900">L. ${order.total.toFixed(2)}</td>
+                    <td class="py-4 px-6">${order.payment}</td>
+                    <td class="py-4 px-6 text-center">${order.receipt ? `<button onclick="openImageModal('${order.id}', '${order.receipt}')" class="bg-amber-500 hover:bg-amber-600 text-white rounded-lg px-2 py-1 text-xs shadow-sm">Ver Foto</button>` : 'N/A'}</td>
+                    <td class="py-4 px-6"><span class="${order.status==='Completado'?'bg-emerald-100 text-emerald-800':'bg-amber-100 text-amber-800'} text-xs px-2 py-1 rounded-full font-semibold">${order.status}</span></td>
+                    <td class="py-4 px-6 text-right">
+                        <button onclick="toggleOrderStatus('${order.id}')" class="text-xs font-semibold underline text-amber-600 mr-2">${order.status==='Pendiente'?'Completar':'Desmarcar'}</button>
+                        <button onclick="deleteOrder('${order.id}')" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleOrderStatus(id) {
+            const idx = database.findIndex(o => o.id === id);
+            if (idx !== -1) {
+                database[idx].status = database[idx].status === 'Pendiente' ? 'Completado' : 'Pendiente';
+                localStorage.setItem('pupusa_orders', JSON.stringify(database));
+                updateDashboard();
+            }
+        }
+
+        function deleteOrder(id) {
+            if (confirm("¿Eliminar este registro?")) {
+                database = database.filter(o => o.id !== id);
+                localStorage.setItem('pupusa_orders', JSON.stringify(database));
+                updateDashboard();
+            }
+        }
+
+        function clearDatabase() {
+            if (confirm("¿Limpiar por completo todo el historial?")) {
+                database = [];
+                localStorage.setItem('pupusa_orders', JSON.stringify(database));
+                updateDashboard();
+            }
+        }
+
+        function renderCharts(cash, deposit) {
+            const payCtx = document.getElementById('payment-chart').getContext('2d');
+            if (paymentChartInstance) paymentChartInstance.destroy();
+            paymentChartInstance = new Chart(payCtx, {
+                type: 'doughnut',
+                data: { labels: ['Efectivo', 'Depósito'], datasets: [{ data: [cash, deposit], backgroundColor: ['#10b981', '#8b5cf6'] }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const ordCtx = document.getElementById('orders-chart').getContext('2d');
+            if (ordersChartInstance) ordersChartInstance.destroy();
+            const sliceData = database.slice(0, 10).reverse();
+            ordersChartInstance = new Chart(ordCtx, {
+                type: 'bar',
+                data: { labels: sliceData.map(o => o.id), datasets: [{ label: 'Órdenes', data: sliceData.map(o => o.qty), backgroundColor: '#f59e0b' }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        function exportToExcel() {
+            if (database.length === 0) return alert("Sin datos.");
+            const flat = database.map((o, i) => ({ "No": i+1, "ID": o.id, "Cliente": o.name, "Teléfono": o.phone, "Cantidad": o.qty, "Total Lempiras": o.total, "Método Pago": o.payment, "Fecha": o.date, "Estatus": o.status }));
+            const ws = XLSX.utils.json_to_sheet(flat);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook=wb, worksheet=ws, "Pupusas");
+            XLSX.writeFile(wb, "Control_Ventas_Pupusas.xlsx");
+        }
+
+        function openImageModal(id, src) {
+            document.getElementById('modal-title').innerText = `Comprobante de Depósito: ${id}`;
+            document.getElementById('modal-img-element').src = src;
+            document.getElementById('image-modal').classList.remove('hidden');
+        }
+        function closeImageModal() { document.getElementById('image-modal').classList.add('hidden'); }
+    </script>
+</body>
+</html>
