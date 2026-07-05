@@ -786,7 +786,7 @@ function adjustQty(amount) {
     let val = parseInt(input.value) + amount;
     if (val < 1) val = 1;
     input.value = val;
-    document.getElementById('total-price').innerText = `L. ${(val * 100).toFixed(2)}`;
+    document.getElementById('total-price').innerText = `L. ${(val * 150).toFixed(2)}`;
 }
 
 function toggleReceiptUpload(show) {
@@ -826,7 +826,7 @@ function triggerAdminAccess() {
     document.getElementById('admin-password-input').value = "";
     document.getElementById('login-error-msg').classList.add('hidden');
     document.getElementById('login-modal').classList.remove('hidden');
-    setTimeout(() => document.getElementById('admin-password-input').focus(), 100);
+    setTimeout(() => document.getElementById('admin-password-input').focus(), 150);
 }
 
 function closeLoginModal() {
