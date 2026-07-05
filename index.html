@@ -6,6 +6,48 @@
     <title>Tacos Mexicanos – Sistema de Pedidos</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        chile: {
+                            50:  '#fef2f2',
+                            100: '#fde3e2',
+                            150: '#fcd4d3',
+                            200: '#fac6c4',
+                            300: '#f29491',
+                            400: '#e8615e',
+                            500: '#d7263d',
+                            600: '#b81f34',
+                            700: '#94192b',
+                            800: '#711422',
+                            900: '#4f0f18'
+                        },
+                        oro: {
+                            50:  '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f2a900',
+                            600: '#c98600',
+                            700: '#996600',
+                            800: '#734d00',
+                            900: '#4d3300'
+                        },
+                        cilantro: {
+                            50:  '#f2f8ec',
+                            100: '#e1eed3',
+                            500: '#3f7d3a',
+                            600: '#33642e',
+                            700: '#274b23'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
@@ -21,8 +63,8 @@
     <style>
         body { font-family: 'Poppins', sans-serif; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #fef3c7; }
-        ::-webkit-scrollbar-thumb { background: #d97706; border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: #fde3e2; }
+        ::-webkit-scrollbar-thumb { background: #b81f34; border-radius: 10px; }
 
         /* Spinner overlay */
         #sync-indicator {
@@ -54,18 +96,18 @@
         }
 
         /* Badge pill */
-        .badge-pending { background:#fef3c7; color:#92400e; }
+        .badge-pending { background:#fef3c7; color:#996600; }
         .badge-done { background:#d1fae5; color:#065f46; }
 
         /* Tabs */
-        .tab-btn.active { background:#92400e; color:white; }
+        .tab-btn.active { background:#94192b; color:white; }
         .tab-btn { transition: background 0.2s, color 0.2s; }
 
         /* Firebase config input styling */
         .firebase-input { font-family: monospace; font-size: 0.8rem; }
     </style>
 </head>
-<body class="bg-amber-50/30 min-h-screen text-slate-800">
+<body class="bg-chile-50/30 min-h-screen text-slate-800">
 
 <!-- =========================================================== -->
 <!-- 🔥 FIREBASE SETUP BANNER (visible until configured)          -->
@@ -73,31 +115,31 @@
 <div id="firebase-setup-banner" class="text-white p-4 text-sm hidden">
     <div class="max-w-5xl mx-auto">
         <div class="flex items-start gap-3">
-            <i class="fa-brands fa-google text-amber-400 text-xl mt-0.5"></i>
+            <i class="fa-brands fa-google text-chile-400 text-xl mt-0.5"></i>
             <div class="flex-1">
-                <p class="font-bold text-amber-300 mb-1">⚡ Modo Offline activo — Configura Firebase para sincronización en tiempo real</p>
+                <p class="font-bold text-chile-300 mb-1">⚡ Modo Offline activo — Configura Firebase para sincronización en tiempo real</p>
                 <p class="text-slate-300 text-xs mb-3">Los pedidos ahora se guardan solo en <strong>este navegador</strong>. Para que todos vean los pedidos en tiempo real, crea un proyecto Firebase gratuito y pega las credenciales abajo.</p>
                 <div class="bg-white/5 rounded-xl p-3 border border-white/10">
-                    <p class="text-xs text-amber-200 font-semibold mb-2">📋 Pasos rápidos: <a href="https://console.firebase.google.com" target="_blank" class="underline text-amber-300">console.firebase.google.com</a> → Nuevo Proyecto → Realtime Database → Modo Prueba → Copiar config aquí:</p>
+                    <p class="text-xs text-chile-200 font-semibold mb-2">📋 Pasos rápidos: <a href="https://console.firebase.google.com" target="_blank" class="underline text-chile-300">console.firebase.google.com</a> → Nuevo Proyecto → Realtime Database → Modo Prueba → Copiar config aquí:</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                         <div>
                             <label class="text-[10px] text-slate-400 font-semibold uppercase">API Key</label>
-                            <input type="text" id="cfg-apiKey" placeholder="AIzaSy..." class="firebase-input w-full rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-500 p-1.5 text-xs outline-none focus:border-amber-400">
+                            <input type="text" id="cfg-apiKey" placeholder="AIzaSy..." class="firebase-input w-full rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-500 p-1.5 text-xs outline-none focus:border-chile-400">
                         </div>
                         <div>
                             <label class="text-[10px] text-slate-400 font-semibold uppercase">Auth Domain</label>
-                            <input type="text" id="cfg-authDomain" placeholder="xxx.firebaseapp.com" class="firebase-input w-full rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-500 p-1.5 text-xs outline-none focus:border-amber-400">
+                            <input type="text" id="cfg-authDomain" placeholder="xxx.firebaseapp.com" class="firebase-input w-full rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-500 p-1.5 text-xs outline-none focus:border-chile-400">
                         </div>
                         <div>
                             <label class="text-[10px] text-slate-400 font-semibold uppercase">Database URL</label>
-                            <input type="text" id="cfg-databaseURL" placeholder="https://xxx-default-rtdb.firebaseio.com" class="firebase-input w-full rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-500 p-1.5 text-xs outline-none focus:border-amber-400">
+                            <input type="text" id="cfg-databaseURL" placeholder="https://xxx-default-rtdb.firebaseio.com" class="firebase-input w-full rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-500 p-1.5 text-xs outline-none focus:border-chile-400">
                         </div>
                         <div>
                             <label class="text-[10px] text-slate-400 font-semibold uppercase">Project ID</label>
-                            <input type="text" id="cfg-projectId" placeholder="mi-proyecto" class="firebase-input w-full rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-500 p-1.5 text-xs outline-none focus:border-amber-400">
+                            <input type="text" id="cfg-projectId" placeholder="mi-proyecto" class="firebase-input w-full rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-500 p-1.5 text-xs outline-none focus:border-chile-400">
                         </div>
                     </div>
-                    <button onclick="initFirebaseWithConfig()" class="mt-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-xs px-4 py-2 rounded-lg transition shadow">
+                    <button onclick="initFirebaseWithConfig()" class="mt-2 bg-chile-500 hover:bg-chile-400 text-slate-900 font-bold text-xs px-4 py-2 rounded-lg transition shadow">
                         <i class="fa-solid fa-plug mr-1"></i> Conectar Firebase
                     </button>
                     <span id="firebase-status-msg" class="ml-3 text-xs text-slate-400"></span>
@@ -110,7 +152,7 @@
 <!-- =========================================================== -->
 <!-- NAVIGATION BAR                                               -->
 <!-- =========================================================== -->
-<nav class="bg-amber-700 text-white shadow-xl sticky top-0 z-50">
+<nav class="bg-chile-700 text-white shadow-xl sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
             <!-- Logo + Brand -->
@@ -123,24 +165,24 @@
                          onerror="this.onerror=null;this.src='';this.parentElement.innerHTML='<span class=\'text-3xl\'>🫓</span>'">
                 </div>
                 <div>
-                    <span class="font-extrabold text-xl tracking-wide">Tacos Mexicanos</span>
-                    <span class="hidden sm:block text-[10px] text-amber-200 -mt-1">Sistema de Pedidos</span>
+                    <span class="font-extrabold text-base sm:text-xl tracking-wide">Tacos Mexicanos</span>
+                    <span class="hidden sm:block text-[10px] text-chile-200 -mt-1">Sistema de Pedidos</span>
                 </div>
             </div>
 
             <!-- Nav Actions -->
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-1.5 sm:space-x-2">
                 <!-- Sync Status -->
-                <div id="sync-indicator" class="hidden items-center space-x-1.5 bg-emerald-600/30 border border-emerald-400/40 rounded-full px-3 py-1 mr-1">
+                <div id="sync-indicator" class="hidden items-center space-x-1.5 bg-emerald-600/30 border border-emerald-400/40 rounded-full px-2.5 py-1 mr-0.5">
                     <div class="h-2.5 w-2.5 bg-emerald-400 rounded-full pulse-live"></div>
-                    <span class="text-[11px] font-semibold text-emerald-200">EN VIVO</span>
+                    <span class="hidden md:inline text-[11px] font-semibold text-emerald-200">EN VIVO</span>
                 </div>
                 <button id="btn-client-view" onclick="switchView('client')"
-                    class="px-4 py-2 rounded-full font-medium text-sm transition bg-amber-900 shadow-md">
+                    class="px-3 sm:px-4 py-2 rounded-full font-medium text-xs sm:text-sm transition bg-chile-900 shadow-md whitespace-nowrap">
                     <i class="fa-solid fa-store mr-1"></i> Pedir
                 </button>
                 <button id="btn-admin-view" onclick="triggerAdminAccess()"
-                    class="px-4 py-2 rounded-full font-medium text-sm transition hover:bg-amber-600">
+                    class="px-3 sm:px-4 py-2 rounded-full font-medium text-xs sm:text-sm transition hover:bg-chile-600 whitespace-nowrap">
                     <i class="fa-solid fa-chart-line mr-1"></i> Admin
                 </button>
             </div>
@@ -161,31 +203,31 @@
         <!-- Hero Banner -->
         <div class="relative rounded-3xl overflow-hidden shadow-2xl mb-8 h-52 sm:h-72 bg-slate-900">
             <img id="hero-food-img"
-                 src="https://drive.google.com/uc?export=view&id=1ASsxo6tnktAAsbeg7Dp8K9eW7fNOBJic"
-                 alt="TacosMexicano"
+                 src="https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?q=80&w=1400&auto=format&fit=crop"
+                 alt="Tacos mexicanos con gringa y chile jalapeño"
                  class="w-full h-full object-cover opacity-90"
-                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop'">
+                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1400&auto=format&fit=crop'">
             <div class="hero-gradient absolute inset-0 flex flex-col justify-end p-6 text-white">
                 <div class="flex items-end justify-between">
                     <div>
-                        <p class="text-amber-300 text-xs font-semibold uppercase tracking-widest mb-1">¡Pedidos Disponibles!</p>
+                        <p class="text-chile-300 text-xs font-semibold uppercase tracking-widest mb-1">¡Pedidos Disponibles!</p>
                         <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight">Ricos Tacos Mexicano 🫓</h1>
                         <p class="text-slate-200 text-sm mt-1">Cada Orden incluye 3 Tacos, Media Gringa, Chile Jalapeño con su incurtido y salsa de la Casa</p>
                     </div>
                     <div class="text-right">
-                        <span class="inline-block bg-amber-500 text-slate-900 font-black px-4 py-2 rounded-2xl text-lg shadow-lg">
+                        <span class="inline-block bg-oro-500 text-slate-900 font-black px-4 py-2 rounded-2xl text-lg shadow-lg">
                             L. 150
                         </span>
-                        <span class="block text-amber-300 text-[11px] mt-1">por Orden</span>
+                        <span class="block text-oro-300 text-[11px] mt-1">por Orden</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Order Form Card -->
-        <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 border border-amber-100/60">
-            <h2 class="text-lg font-bold mb-6 flex items-center text-amber-900 border-b pb-3 border-amber-100">
-                <i class="fa-solid fa-file-invoice-dollar mr-2 text-amber-600"></i>
+        <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 border border-chile-100/60">
+            <h2 class="text-lg font-bold mb-6 flex items-center text-chile-900 border-b pb-3 border-chile-100">
+                <i class="fa-solid fa-file-invoice-dollar mr-2 text-chile-600"></i>
                 Formulario de Pedido
             </h2>
 
@@ -201,7 +243,7 @@
                             <i class="fa-solid fa-user"></i>
                         </span>
                         <input type="text" id="client-name" required placeholder="Ej. Carlos Martínez"
-                            class="pl-10 w-full rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition p-3 text-sm">
+                            class="pl-10 w-full rounded-xl border border-slate-200 focus:border-chile-500 focus:ring-2 focus:ring-chile-200 transition p-3 text-sm">
                     </div>
                 </div>
 
@@ -215,7 +257,7 @@
                             <i class="fa-solid fa-phone"></i>
                         </span>
                         <input type="tel" id="client-phone" required placeholder="Ej. 9999-9999"
-                            class="pl-10 w-full rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition p-3 text-sm">
+                            class="pl-10 w-full rounded-xl border border-slate-200 focus:border-chile-500 focus:ring-2 focus:ring-chile-200 transition p-3 text-sm">
                     </div>
                 </div>
 
@@ -230,10 +272,10 @@
                         <input type="number" id="order-qty" value="1" min="1" required readonly
                             class="w-16 text-center font-bold text-xl rounded-xl border border-slate-200 p-2 bg-slate-50">
                         <button type="button" onclick="adjustQty(1)"
-                            class="bg-amber-500 hover:bg-amber-600 text-white w-11 h-11 rounded-xl flex items-center justify-center transition font-bold text-xl select-none">+</button>
-                        <div class="flex-grow bg-amber-50 rounded-xl border border-amber-150 px-4 py-2 text-right">
-                            <span class="text-[11px] text-slate-400 uppercase font-semibold">Total</span>
-                            <div class="text-2xl font-extrabold text-amber-600" id="total-price">L. 150.00</div>
+                            class="bg-chile-500 hover:bg-chile-600 text-white w-11 h-11 rounded-xl flex items-center justify-center transition font-bold text-xl select-none">+</button>
+                        <div class="flex-grow bg-gradient-to-br from-oro-50 to-chile-50 rounded-xl border border-oro-200 px-4 py-2.5 text-right">
+                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wide">Total a Pagar</span>
+                            <div class="text-3xl sm:text-4xl font-black text-oro-600 leading-tight tracking-tight" id="total-price">L. 150.00</div>
                         </div>
                     </div>
                 </div>
@@ -245,17 +287,17 @@
                     </label>
                     <div class="grid grid-cols-2 gap-3">
                         <label id="label-pay-cash"
-                            class="flex flex-col items-center justify-center p-4 border-2 rounded-2xl cursor-pointer transition border-amber-500 bg-amber-50">
+                            class="flex flex-col items-center justify-center p-4 border-2 rounded-2xl cursor-pointer transition border-chile-500 bg-chile-50">
                             <input type="radio" name="payment-method" value="Efectivo" checked
                                 onchange="toggleReceiptUpload(false)" class="hidden">
                             <i class="fa-solid fa-money-bill-wave text-2xl text-emerald-600 mb-1.5"></i>
                             <span class="font-semibold text-sm text-slate-700">Efectivo</span>
                         </label>
                         <label id="label-pay-deposit"
-                            class="flex flex-col items-center justify-center p-4 border-2 rounded-2xl cursor-pointer transition border-slate-200 hover:bg-amber-50/40">
+                            class="flex flex-col items-center justify-center p-4 border-2 rounded-2xl cursor-pointer transition border-slate-200 hover:bg-chile-50/40">
                             <input type="radio" name="payment-method" value="Depósito"
                                 onchange="toggleReceiptUpload(true)" class="hidden">
-                            <i class="fa-solid fa-mobile-screen text-2xl text-amber-600 mb-1.5"></i>
+                            <i class="fa-solid fa-mobile-screen text-2xl text-chile-600 mb-1.5"></i>
                             <span class="font-semibold text-sm text-slate-700">Depósito</span>
                         </label>
                     </div>
@@ -267,10 +309,10 @@
                         Comprobante de Depósito <span class="text-red-500">*</span>
                     </label>
                     <div onclick="document.getElementById('receipt-image').click()"
-                        class="border-2 border-dashed border-amber-300 rounded-2xl p-6 text-center hover:bg-amber-50/50 transition cursor-pointer relative">
+                        class="border-2 border-dashed border-chile-300 rounded-2xl p-6 text-center hover:bg-chile-50/50 transition cursor-pointer relative">
                         <input type="file" id="receipt-image" accept="image/*" class="hidden" onchange="handleImagePreview(event)">
                         <div id="upload-prompt" class="space-y-1.5">
-                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-amber-400"></i>
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-chile-400"></i>
                             <p class="text-sm font-medium text-slate-600">Toca aquí para subir el comprobante</p>
                             <p class="text-xs text-slate-400">PNG, JPG o JPEG</p>
                         </div>
@@ -285,7 +327,7 @@
 
                 <!-- Submit -->
                 <button type="submit"
-                    class="w-full bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 flex justify-center items-center gap-2 text-base">
+                    class="w-full bg-chile-600 hover:bg-chile-700 active:bg-chile-800 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 flex justify-center items-center gap-2 text-base">
                     <i class="fa-solid fa-paper-plane"></i>
                     Confirmar Pedido
                 </button>
@@ -311,8 +353,8 @@
         <!-- Admin Top Bar -->
         <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-                <h1 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-gauge-high text-amber-600"></i>
+                <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-gauge-high text-chile-600"></i>
                     Panel de Control
                 </h1>
                 <p class="text-xs text-slate-500 mt-0.5">Todos los pedidos en tiempo real · TacosMexicano</p>
@@ -322,8 +364,8 @@
                     <div class="h-2 w-2 bg-emerald-500 rounded-full pulse-live"></div>
                     Firebase Conectado
                 </div>
-                <div id="offline-badge" class="items-center gap-1.5 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-3 py-2 rounded-xl flex">
-                    <i class="fa-solid fa-wifi-slash text-amber-500"></i>
+                <div id="offline-badge" class="items-center gap-1.5 bg-chile-50 border border-chile-200 text-chile-700 text-xs font-bold px-3 py-2 rounded-xl flex">
+                    <i class="fa-solid fa-wifi-slash text-chile-500"></i>
                     Modo Local
                 </div>
                 <button onclick="exportToExcel()"
@@ -338,13 +380,13 @@
         </div>
 
         <!-- KPI Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
             <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center justify-between order-card">
                 <div>
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Órdenes</span>
                     <h4 class="text-3xl font-extrabold text-slate-800 mt-0.5" id="kpi-orders-count">0</h4>
                 </div>
-                <div class="h-12 w-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 text-xl">
+                <div class="h-12 w-12 rounded-xl bg-chile-100 flex items-center justify-center text-chile-600 text-xl">
                     <i class="fa-solid fa-box"></i>
                 </div>
             </div>
@@ -384,22 +426,13 @@
                     <i class="fa-solid fa-cubes"></i>
                 </div>
             </div>
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center justify-between order-card">
-                <div>
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Tacos</span>
-                    <h4 class="text-3xl font-extrabold text-orange-700 mt-0.5" id="kpi-total-tacos">0</h4>
-                </div>
-                <div class="h-12 w-12 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600 text-xl">
-                    <i class="fa-solid fa-burger"></i>
-                </div>
-            </div>
         </div>
 
         <!-- Charts -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100">
                 <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-chart-pie text-amber-500"></i> Métodos de Pago
+                    <i class="fa-solid fa-chart-pie text-chile-500"></i> Métodos de Pago
                 </h3>
                 <div class="relative h-52 flex justify-center">
                     <canvas id="payment-chart"></canvas>
@@ -407,7 +440,7 @@
             </div>
             <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100">
                 <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-chart-bar text-amber-500"></i> Volumen de Últimos Pedidos
+                    <i class="fa-solid fa-chart-bar text-chile-500"></i> Volumen de Últimos Pedidos
                 </h3>
                 <div class="relative h-52">
                     <canvas id="orders-chart"></canvas>
@@ -425,20 +458,13 @@
                         <span id="order-count-text" class="font-semibold text-slate-600"></span>
                     </p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-filter text-slate-400 text-sm"></i>
-                    <select id="table-filter" onchange="renderOrdersTable()"
-                        class="rounded-xl border border-slate-200 text-xs p-2 bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400">
-                        <option value="todos">Todos</option>
-                        <option value="Efectivo">Efectivo</option>
-                        <option value="Depósito">Depósitos</option>
-                        <option value="Pendiente">Pendientes</option>
-                        <option value="Completado">Completados</option>
-                    </select>
-                </div>
+                <button onclick="clearTableFilters()"
+                    class="flex items-center gap-1.5 text-xs font-semibold text-chile-600 hover:text-chile-800 bg-chile-50 hover:bg-chile-100 px-3 py-2 rounded-xl transition shrink-0">
+                    <i class="fa-solid fa-filter-circle-xmark"></i> Limpiar filtros
+                </button>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-left">
+                <table class="w-full text-left min-w-[820px]">
                     <thead>
                         <tr class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold tracking-wider border-b border-slate-200">
                             <th class="py-3 px-5">ID</th>
@@ -451,6 +477,40 @@
                             <th class="py-3 px-5">Estado</th>
                             <th class="py-3 px-5 text-right">Acción</th>
                         </tr>
+                        <tr class="bg-white border-b-2 border-slate-100">
+                            <th class="p-2 px-3">
+                                <input type="text" oninput="setTableFilter('id', this.value)" placeholder="Buscar ID..."
+                                    class="w-full rounded-lg border border-slate-200 text-xs px-2 py-1.5 font-normal normal-case focus:ring-1 focus:ring-chile-400 focus:border-chile-400 outline-none">
+                            </th>
+                            <th class="p-2 px-3">
+                                <input type="text" oninput="setTableFilter('cliente', this.value)" placeholder="Buscar cliente..."
+                                    class="w-full rounded-lg border border-slate-200 text-xs px-2 py-1.5 font-normal normal-case focus:ring-1 focus:ring-chile-400 focus:border-chile-400 outline-none">
+                            </th>
+                            <th class="p-2 px-3 hidden sm:table-cell">
+                                <input type="text" oninput="setTableFilter('telefono', this.value)" placeholder="Teléfono..."
+                                    class="w-full rounded-lg border border-slate-200 text-xs px-2 py-1.5 font-normal normal-case focus:ring-1 focus:ring-chile-400 focus:border-chile-400 outline-none">
+                            </th>
+                            <th class="p-2 px-3"></th>
+                            <th class="p-2 px-3"></th>
+                            <th class="p-2 px-3">
+                                <select onchange="setTableFilter('pago', this.value)"
+                                    class="w-full rounded-lg border border-slate-200 text-xs px-1.5 py-1.5 font-normal normal-case bg-white focus:ring-1 focus:ring-chile-400 focus:border-chile-400 outline-none">
+                                    <option value="todos">Todos</option>
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Depósito">Depósito</option>
+                                </select>
+                            </th>
+                            <th class="p-2 px-3"></th>
+                            <th class="p-2 px-3">
+                                <select onchange="setTableFilter('estado', this.value)"
+                                    class="w-full rounded-lg border border-slate-200 text-xs px-1.5 py-1.5 font-normal normal-case bg-white focus:ring-1 focus:ring-chile-400 focus:border-chile-400 outline-none">
+                                    <option value="todos">Todos</option>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="Completado">Completado</option>
+                                </select>
+                            </th>
+                            <th class="p-2 px-3"></th>
+                        </tr>
                     </thead>
                     <tbody id="orders-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
                 </table>
@@ -460,7 +520,7 @@
         <!-- Activity Log -->
         <div class="bg-slate-950 rounded-3xl p-6 shadow-md text-white">
             <div class="flex justify-between items-center mb-3">
-                <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                <h3 class="text-sm font-bold text-chile-400 flex items-center gap-2">
                     <i class="fa-solid fa-terminal"></i> Registro de Actividad
                 </h3>
                 <div class="flex items-center gap-1.5">
@@ -485,15 +545,15 @@
     <div class="bg-white rounded-3xl overflow-hidden shadow-2xl max-w-sm w-full relative"
         onclick="event.stopPropagation()">
         <!-- Header stripe -->
-        <div class="bg-amber-700 p-5 text-white text-center">
+        <div class="bg-chile-700 p-5 text-white text-center">
             <div class="text-4xl mb-2">🔐</div>
             <h3 class="font-extrabold text-xl">Acceso Administrativo</h3>
-            <p class="text-amber-200 text-xs mt-1">Ingresa la contraseña de control</p>
+            <p class="text-chile-200 text-xs mt-1">Ingresa la contraseña de control</p>
         </div>
         <!-- Body -->
         <div class="p-6 space-y-4">
             <input type="password" id="admin-password-input" placeholder="••••••••"
-                class="w-full rounded-2xl border-2 border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-100 transition p-3.5 text-center text-xl tracking-widest outline-none">
+                class="w-full rounded-2xl border-2 border-slate-200 focus:border-chile-500 focus:ring-2 focus:ring-chile-100 transition p-3.5 text-center text-xl tracking-widest outline-none">
             <p id="login-error-msg" class="text-xs text-rose-500 text-center font-semibold hidden">
                 <i class="fa-solid fa-triangle-exclamation mr-1"></i> Contraseña incorrecta. Inténtalo de nuevo.
             </p>
@@ -503,7 +563,7 @@
                     Cancelar
                 </button>
                 <button onclick="verifyAdminPassword()"
-                    class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl transition text-sm shadow">
+                    class="flex-1 bg-chile-600 hover:bg-chile-700 text-white font-bold py-3 rounded-xl transition text-sm shadow">
                     <i class="fa-solid fa-unlock-keyhole mr-1"></i> Ingresar
                 </button>
             </div>
@@ -555,6 +615,7 @@ const FIREBASE_CONFIG = {
 };
 // -------------------------------------------------------
 
+const PRICE_PER_ORDER = 150; // L. por orden (3 Tacos + Media Gringa + Chile Jalapeño)
 let db = null; // Firebase database reference
 let isFirebaseConnected = false;
 let database = [];
@@ -635,7 +696,7 @@ function initFirebaseWithConfig() {
         return;
     }
     msg.textContent = 'Conectando...';
-    msg.className = 'ml-3 text-xs text-amber-300';
+    msg.className = 'ml-3 text-xs text-chile-300';
 
     // Save to localStorage for persistence
     localStorage.setItem('pupusa_firebase_config', JSON.stringify(config));
@@ -746,7 +807,7 @@ async function handleFormSubmit(e) {
 
     const newOrder = {
         id: orderId, name, phone, qty,
-        total: qty * 100,
+        total: qty * PRICE_PER_ORDER,
         payment,
         receipt: currentUploadedImageBase64 || null,
         status: "Pendiente",
@@ -762,7 +823,7 @@ async function handleFormSubmit(e) {
     logActivity(`📦 Nuevo pedido — ${orderId} | ${name} | ${qty} combo(s) | ${payment}`);
 
     // Show success toast
-    document.getElementById('toast-order-id').innerText = `Pedido #${orderId} · ${qty} combo(s) · L. ${(qty*100).toFixed(2)}`;
+    document.getElementById('toast-order-id').innerText = `Pedido #${orderId} · ${qty} orden(es) · L. ${(qty*PRICE_PER_ORDER).toFixed(2)}`;
     const toast = document.getElementById('success-toast');
     toast.classList.remove('hidden');
     setTimeout(() => toast.classList.add('hidden'), 6000);
@@ -770,7 +831,7 @@ async function handleFormSubmit(e) {
     // Reset form
     e.target.reset();
     document.getElementById('order-qty').value = "1";
-    document.getElementById('total-price').innerText = "L. 150.00";
+    document.getElementById('total-price').innerText = `L. ${PRICE_PER_ORDER.toFixed(2)}`;
     currentUploadedImageBase64 = null;
     toggleReceiptUpload(false);
 
@@ -786,7 +847,7 @@ function adjustQty(amount) {
     let val = parseInt(input.value) + amount;
     if (val < 1) val = 1;
     input.value = val;
-    document.getElementById('total-price').innerText = `L. ${(val * 150).toFixed(2)}`;
+    document.getElementById('total-price').innerText = `L. ${(val * PRICE_PER_ORDER).toFixed(2)}`;
 }
 
 function toggleReceiptUpload(show) {
@@ -795,13 +856,13 @@ function toggleReceiptUpload(show) {
     const depLbl   = document.getElementById('label-pay-deposit');
     if (show) {
         section.classList.remove('hidden');
-        depLbl.classList.add('border-amber-500', 'bg-amber-50');
-        cashLbl.classList.remove('border-amber-500', 'bg-amber-50');
+        depLbl.classList.add('border-chile-500', 'bg-chile-50');
+        cashLbl.classList.remove('border-chile-500', 'bg-chile-50');
         cashLbl.classList.add('border-slate-200');
     } else {
         section.classList.add('hidden');
-        cashLbl.classList.add('border-amber-500', 'bg-amber-50');
-        depLbl.classList.remove('border-amber-500', 'bg-amber-50');
+        cashLbl.classList.add('border-chile-500', 'bg-chile-50');
+        depLbl.classList.remove('border-chile-500', 'bg-chile-50');
         depLbl.classList.add('border-slate-200');
         currentUploadedImageBase64 = null;
         document.getElementById('upload-preview').classList.add('hidden');
@@ -853,13 +914,13 @@ function switchView(view) {
     const adminSec  = document.getElementById('view-admin');
 
     if (view === 'client') {
-        clientBtn.classList.add('bg-amber-900', 'shadow-md');
-        adminBtn.classList.remove('bg-amber-900', 'shadow-md');
+        clientBtn.classList.add('bg-chile-900', 'shadow-md');
+        adminBtn.classList.remove('bg-chile-900', 'shadow-md');
         clientSec.classList.replace('hidden', 'block');
         adminSec.classList.replace('block', 'hidden');
     } else {
-        adminBtn.classList.add('bg-amber-900', 'shadow-md');
-        clientBtn.classList.remove('bg-amber-900', 'shadow-md');
+        adminBtn.classList.add('bg-chile-900', 'shadow-md');
+        clientBtn.classList.remove('bg-chile-900', 'shadow-md');
         adminSec.classList.replace('hidden', 'block');
         clientSec.classList.replace('block', 'hidden');
         updateDashboard();
@@ -875,31 +936,46 @@ function updateDashboard() {
     const cash       = database.filter(o => o.payment === 'Efectivo').length;
     const deposit    = database.filter(o => o.payment === 'Depósito').length;
     const totalUnits  = database.reduce((a, c) => a + (c.qty || 0), 0);
-    const totalPupusas = totalUnits * 3;
 
     document.getElementById('kpi-orders-count').innerText  = total;
     document.getElementById('kpi-total-sales').innerText   = `L. ${salesSum.toLocaleString('es-HN', {minimumFractionDigits:2})}`;
     document.getElementById('kpi-cash-orders').innerText   = cash;
     document.getElementById('kpi-deposit-orders').innerText = deposit;
     document.getElementById('kpi-total-units').innerText   = totalUnits.toLocaleString('es-HN');
-    document.getElementById('kpi-total-pupusas').innerText = totalPupusas.toLocaleString('es-HN');
     document.getElementById('order-count-text').innerText  = total > 0 ? `· ${total} pedido(s)` : '';
 
     renderOrdersTable();
     renderCharts(cash, deposit);
 }
 
+// Estado de los filtros por columna
+const tableFilters = { id: '', cliente: '', telefono: '', pago: 'todos', estado: 'todos' };
+
+function setTableFilter(field, value) {
+    tableFilters[field] = value;
+    renderOrdersTable();
+}
+
+function clearTableFilters() {
+    tableFilters.id = ''; tableFilters.cliente = ''; tableFilters.telefono = '';
+    tableFilters.pago = 'todos'; tableFilters.estado = 'todos';
+    document.querySelectorAll('#view-admin thead input[type="text"]').forEach(i => i.value = '');
+    document.querySelectorAll('#view-admin thead select').forEach(s => s.value = 'todos');
+    renderOrdersTable();
+}
+
 function renderOrdersTable() {
-    const filter = document.getElementById('table-filter').value;
     const tbody  = document.getElementById('orders-tbody');
     tbody.innerHTML = '';
 
-    let filtered = database;
-    if (filter === 'Efectivo' || filter === 'Depósito') {
-        filtered = database.filter(o => o.payment === filter);
-    } else if (filter === 'Pendiente' || filter === 'Completado') {
-        filtered = database.filter(o => o.status === filter);
-    }
+    const f = tableFilters;
+    let filtered = database.filter(o =>
+        (!f.id       || o.id.toLowerCase().includes(f.id.toLowerCase())) &&
+        (!f.cliente  || o.name.toLowerCase().includes(f.cliente.toLowerCase())) &&
+        (!f.telefono || o.phone.toLowerCase().includes(f.telefono.toLowerCase())) &&
+        (f.pago   === 'todos' || o.payment === f.pago) &&
+        (f.estado === 'todos' || o.status  === f.estado)
+    );
 
     if (filtered.length === 0) {
         tbody.innerHTML = `<tr><td colspan="9" class="text-center py-10 text-slate-400 text-sm">
@@ -912,9 +988,9 @@ function renderOrdersTable() {
             ? 'badge-done'
             : 'badge-pending';
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-amber-50/30 transition";
+        tr.className = "hover:bg-chile-50/30 transition";
         tr.innerHTML = `
-            <td class="py-3.5 px-5 font-bold text-amber-700 text-xs">${order.id}</td>
+            <td class="py-3.5 px-5 font-bold text-chile-700 text-xs">${order.id}</td>
             <td class="py-3.5 px-5">
                 <span class="font-semibold text-slate-800">${order.name}</span>
                 <span class="block text-[10px] text-slate-400">${order.date}</span>
@@ -930,7 +1006,7 @@ function renderOrdersTable() {
             <td class="py-3.5 px-5 text-center">
                 ${order.receipt
                     ? `<button onclick="openImageModal('${order.id}', '${order.receipt}')"
-                        class="bg-amber-500 hover:bg-amber-600 text-white rounded-lg px-2.5 py-1 text-xs shadow-sm transition">
+                        class="bg-chile-500 hover:bg-chile-600 text-white rounded-lg px-2.5 py-1 text-xs shadow-sm transition">
                         <i class="fa-solid fa-image mr-1"></i>Ver
                        </button>`
                     : '<span class="text-slate-300 text-xs">—</span>'}
@@ -940,7 +1016,7 @@ function renderOrdersTable() {
             </td>
             <td class="py-3.5 px-5 text-right">
                 <button onclick="toggleOrderStatus('${order.id}', '${order._fbKey || ''}')"
-                    class="text-xs font-semibold text-amber-600 hover:text-amber-800 underline mr-2">
+                    class="text-xs font-semibold text-chile-600 hover:text-chile-800 underline mr-2">
                     ${order.status==='Pendiente' ? 'Completar' : 'Reabrir'}
                 </button>
                 <button onclick="deleteOrder('${order.id}', '${order._fbKey || ''}')"
